@@ -55,3 +55,46 @@ CodeCoverage/
 *.VisualState.xml
 TestResult.xml
 nunit-*.xml
+
+# Visual Studio cache/options directory
+.vs/
+
+# Visual Studio Code
+.vscode/
+*.code-workspace
+
+# IDE-specific files
+.idea/
+*.user
+*.userprefs
+*.suo
+*.sln.iml
+
+# Editor backup files
+*.swp
+*.swo
+*~
+
+# OS-specific files
+.DS_Store
+Thumbs.db
+
+# Local configuration and secrets
+appsettings.Development.json
+appsettings.Local.json
+*.local.json
+
+# Database files
+*.db
+*.mdf
+*.ldf
+*.sqlite
+*.sqlite3
+
+# Package manager lock files
+packages.lock.json
+
+# Test coverage and results
+coverage/
+*.trx
+OpenCover/
