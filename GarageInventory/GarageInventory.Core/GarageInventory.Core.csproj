@@ -7,16 +7,19 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\GarageInventory.Persistence\GarageInventory.Persistence.csproj" />
     <ProjectReference Include="..\GarageInventory.Shared\GarageInventory.Shared.csproj" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Converters\Tires\" />
-    <Folder Include="Models\MotorParts\" />
-    <Folder Include="Models\Сlothes\" />
-    <Folder Include="Models\Tools\" />
-    <Folder Include="Models\Tires\" />
+    <Folder Include="Converters\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="FluentValidation" Version="12.1.1" />
+    <PackageReference Include="FluentValidation.AspNetCore" Version="11.3.1" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="10.0.10" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="10.0.10" />
+    <PackageReference Include="Microsoft.Extensions.Identity.Core" Version="10.0.10" />
   </ItemGroup>
 
 </Project>

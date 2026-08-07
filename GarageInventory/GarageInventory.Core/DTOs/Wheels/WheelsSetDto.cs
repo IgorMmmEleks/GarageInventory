@@ -1,6 +1,6 @@
 ﻿using GarageInventory.Shared.Enums;
 
-namespace GarageInventory.Core.DTOs
+namespace GarageInventory.Core.DTOs.Wheels
 {
     public class WheelsSetDto
     {

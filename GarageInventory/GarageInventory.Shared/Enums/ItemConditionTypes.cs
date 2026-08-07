@@ -1,6 +1,6 @@
 ﻿namespace GarageInventory.Shared.Enums
 {
-    public enum WheelConditionTypes
+    public enum ItemConditionTypes
     {
         Unknown = 0,
         New = 1,

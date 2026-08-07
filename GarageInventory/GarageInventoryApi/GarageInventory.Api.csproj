@@ -12,6 +12,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\GarageInventory.Core\GarageInventory.Core.csproj" />
+    <ProjectReference Include="..\GarageInventory.Persistence\GarageInventory.Persistence.csproj" />
   </ItemGroup>
 
 </Project>
