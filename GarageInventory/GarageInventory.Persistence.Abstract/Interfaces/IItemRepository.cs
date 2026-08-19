@@ -1,7 +1,4 @@
-﻿using GarageInventory.Core.Models.Items;
-using GarageInventory.Shared.Enums;
-
-namespace GarageInventory.Core.Database.Interfaces;
+﻿namespace GarageInventory.Persistence.Abstract.Interfaces;
 
     public interface IItemRepository
     {

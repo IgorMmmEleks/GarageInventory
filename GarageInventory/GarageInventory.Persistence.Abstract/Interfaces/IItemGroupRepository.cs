@@ -1,6 +1,6 @@
-﻿using GarageInventory.Core.Models.Items;
+﻿
 
-namespace GarageInventory.Core.Database.Interfaces;
+namespace GarageInventory.Persistence.Abstract.Interfaces;
 
     public interface IItemGroupRepository
     {

@@ -1,6 +1,6 @@
 ﻿using Dapper;
-using GarageInventory.Core.Database.Interfaces;
-using GarageInventory.Core.Models.Users;
+using GarageInventory.Persistence.Abstract.Interfaces;
+using GarageInventory.Persistence.Abstract.Models;
 using GarageInventory.Persistence.Database.Interfaces;
 
 namespace GarageInventory.Persistence.Repositories
@@ -24,6 +24,29 @@ namespace GarageInventory.Persistence.Repositories
                 return count > 0;
             }
         }
+
+        public async Task<IEnumerable<UserModel>> GetAllAsync(int skip, int take)
+        {
+            using (var connection = _connectionFactory.CreateConnection())
+            {
+                var users = await connection.QueryAsync<UserModel>(
+                    "SELECT * FROM Users ORDER BY Nickname OFFSET @Skip ROWS FETCH NEXT @Take ROWS ONLY",
+                    new { Skip = skip, Take = take });
+                return users;
+            }
+        }
+
+        public async Task<UserModel?> GetByUserLoginAsync(string login)
+        {
+            using (var connection = _connectionFactory.CreateConnection())
+            {
+                var user = await connection.QuerySingleOrDefaultAsync<UserModel>(
+                    "SELECT * FROM Users WHERE Nickname = @Nickname",
+                    new { Nickname = login });
+                return user;
+            }
+        }
+
         public async Task<Guid?> CreateAsync(UserModel user)
         {
             using (var connection = _connectionFactory.CreateConnection())
@@ -52,6 +75,11 @@ namespace GarageInventory.Persistence.Repositories
             }
         }
 
+        public async Task<bool> UpdateAsync(UserModel user)
+        {
+            throw new NotImplementedException();
+        }
+
         public async Task<bool> DeleteAsync(Guid id)
         {
             int affectedRows = 0;
@@ -63,21 +91,6 @@ namespace GarageInventory.Persistence.Repositories
                     new { Id = id });
             }
             return affectedRows > 0;
-        }
-
-        public async Task<UserModel?> GetByUserNicknameAsync(string login)
-        {
-            using (var connection = _connectionFactory.CreateConnection())
-            {
-                var user = await connection.QuerySingleOrDefaultAsync<UserModel>(
-                    "SELECT * FROM Users WHERE Nickname = @Nickname",
-                    new { Nickname = login });
-                return user;
-            }
-        }
-        public async Task<bool> UpdateAsync(UserModel user)
-        {
-            throw new NotImplementedException();
         }
     }
 }

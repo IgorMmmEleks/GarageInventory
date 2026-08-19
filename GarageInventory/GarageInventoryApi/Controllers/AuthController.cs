@@ -47,7 +47,7 @@ namespace GarageInventory.Api.Controllers
 
             var authProperties = new AuthenticationProperties
             {
-                //AllowRefresh = <bool>,
+                AllowRefresh = true
                 // Refreshing the authentication session should be allowed.
 
                 //ExpiresUtc = DateTimeOffset.UtcNow.AddMinutes(10),

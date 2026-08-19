@@ -1,5 +1,5 @@
-﻿using GarageInventory.Core.Database.Interfaces;
-using GarageInventory.Core.Models;
+﻿using GarageInventory.Persistence.Abstract.Interfaces;
+using GarageInventory.Persistence.Abstract.Models;
 using GarageInventory.Persistence.Database.Interfaces;
 
 namespace GarageInventory.Persistence.Repositories

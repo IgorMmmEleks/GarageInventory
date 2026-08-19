@@ -35,9 +35,9 @@ builder.Services
     {
         options.Cookie.HttpOnly = true;
         options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
-        options.Cookie.SameSite = SameSiteMode.Strict;
+        options.Cookie.SameSite = SameSiteMode.None;
         options.SlidingExpiration = true;
-        options.ExpireTimeSpan = TimeSpan.FromHours(4);
+        options.ExpireTimeSpan = TimeSpan.FromHours(1);
     });
 
 builder.Services.AddAuthorization();

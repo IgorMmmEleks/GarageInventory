@@ -1,7 +1,5 @@
-﻿using GarageInventory.Core.Models.Items;
+﻿namespace GarageInventory.Persistence.Abstract.Models;
 
-namespace GarageInventory.Core.Models.Tools
-{
     public class ToolModel : BaseItemModel
     {
         public int ToolType { get; set; }
@@ -12,4 +10,3 @@ namespace GarageInventory.Core.Models.Tools
 
         public string? ToolSpec { get; set; }
     }
-}

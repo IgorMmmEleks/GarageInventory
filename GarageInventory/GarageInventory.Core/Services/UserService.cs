@@ -1,34 +1,34 @@
-﻿using GarageInventory.Core.Database.Interfaces;
-using GarageInventory.Core.DTOs.Users;
-using GarageInventory.Core.Models.Users;
+﻿using GarageInventory.Core.DTOs.Users;
+using GarageInventory.Core.Results;
 using GarageInventory.Core.Services.Interfaces;
+using GarageInventory.Persistence.Abstract.Interfaces;
+using GarageInventory.Persistence.Abstract.Models;
 using Microsoft.AspNetCore.Identity;
+using MapsterMapper;
+using GarageInventory.Shared.Enums;
+using Mapster;
+
 namespace GarageInventory.Core.Services
 {
     public class UserService : IUserService
     {
+        private readonly IMapper _mapper;
         private readonly IUserRepository _userRepository;
         private readonly IPasswordHasher<UserModel> _passwordHasher;
 
-        public UserService(IUserRepository userRepository, IPasswordHasher<UserModel> passwordHasher)
+        public UserService(IMapper mapper, IUserRepository userRepository, IPasswordHasher<UserModel> passwordHasher)
         {
+            _mapper = mapper;
             _userRepository = userRepository;
             _passwordHasher = passwordHasher;
         }
 
-        public async Task<bool> UserExistsAsync(string userEmail)
-        {
-            return await _userRepository.ExistsAsync(userEmail);
-        }
-
-        public async Task<UserDto?> ValidateCredentialsAsync(
-            string login,
-            string password)
+        public async Task<UserDto?> ValidateCredentialsAsync(string login, string password)
         {
             if (string.IsNullOrEmpty(login) || string.IsNullOrEmpty(password))
                 return null;
 
-            var user = await _userRepository.GetByUserNicknameAsync(login);
+            var user = await _userRepository.GetByUserLoginAsync(login);
 
             if (user == null)
                 return null;
@@ -41,59 +41,103 @@ namespace GarageInventory.Core.Services
             if (valid == PasswordVerificationResult.Failed)
                 return null;
 
-            return new UserDto
-            {
-                Login = user.Login,
-                Name = user.Name,
-                Surname = user.Surname,
-                Email = user.Email,
-                UserType = user.UserType
-            };
+            return _mapper.Map<UserModel, UserDto>(user);
         }
 
-        public async Task<UserModel> CreateAsync(CreateUserDto userDto)
+        public async Task<OperationResult<List<UserDto>>> GetAllAsync(int skip, int take)
         {
-            var user = userDto.ToUserModel();
+            try {
 
-            user.PasswordHash = _passwordHasher.HashPassword(user, userDto.Password);
-            user.IsActive = true;
+                var userList = await _userRepository.GetAllAsync(skip, take);
 
-            var userId = await _userRepository.CreateAsync(user);
+                if (userList == null)
+                    return OperationResult<List<UserDto>>.Failure(OperationResultErrors.Failed);
 
-            if(userId == null)
-            {
-                throw new Exception("Failed to create user."); //!!!
+                return OperationResult<List<UserDto>>.Success(_mapper.Map<List<UserModel>, List<UserDto>>(userList.ToList()));
             }
-
-            return user;
+            catch (Exception ex) {
+                return OperationResult<List<UserDto>>.Exception(ex);
+            }
         }
 
-
-
-
-        public Task<bool> DeleteUserAsync(Guid userId)
+        public async Task<OperationResult<UserDto>> GetAsync(string userLogin)
         {
-            throw new NotImplementedException();
+            try {
+
+                var user = await _userRepository.GetByUserLoginAsync(userLogin);
+
+                if (user == null)
+                    return OperationResult<UserDto>.Failure(OperationResultErrors.NotFound);
+
+                return OperationResult<UserDto>.Success(_mapper.Map<UserModel, UserDto>(user));
+            }
+            catch (Exception ex) {
+                return OperationResult<UserDto>.Exception(ex);
+            }
         }
 
-        public Task<UserModel> GetUserByEmailAsync(string email)
+        public async Task<OperationResult<UserDto>> CreateAsync(CreateUserDto createUserDto)
         {
-            throw new NotImplementedException();
+            try {
+
+                if (await _userRepository.ExistsAsync(createUserDto.Email))
+                    return OperationResult<UserDto>.Failure(OperationResultErrors.AlreadyExists);
+
+                var user = _mapper.Map<CreateUserDto, UserModel>(createUserDto);
+
+                user.PasswordHash = _passwordHasher.HashPassword(user, createUserDto.Password);
+
+                var userId = await _userRepository.CreateAsync(user);
+
+                if (userId == null)
+                    return OperationResult<UserDto>.Failure(OperationResultErrors.Failed);
+
+                return OperationResult<UserDto>.Success(_mapper.Map<UserModel, UserDto>(user));
+            }
+            catch (Exception ex) {
+                return OperationResult<UserDto>.Exception(ex);
+            }
         }
 
-        public Task<UserModel> GetUserByNicknameAsync(string nickname)
+        public async Task<OperationResult<UserDto>> UpdateAsync(UpdateUserDto updateUserDto)
         {
-            throw new NotImplementedException();
+            try {
+
+                var user = await _userRepository.GetByUserLoginAsync(updateUserDto.Login);
+
+                if(user == null)
+                    return OperationResult<UserDto>.Failure(OperationResultErrors.NotFound);
+
+                updateUserDto.Adapt(user);
+
+                if(!string.IsNullOrEmpty(updateUserDto.Password))
+                    user.PasswordHash = _passwordHasher.HashPassword(user, updateUserDto.Password);
+
+                var result = await _userRepository.UpdateAsync(user);
+
+                if(!result)
+                    return OperationResult<UserDto>.Failure(OperationResultErrors.Failed);
+
+                return OperationResult<UserDto>.Success(_mapper.Map<UserModel, UserDto>(user));
+            }
+            catch (Exception ex) {
+                return OperationResult<UserDto>.Exception(ex);
+            }
         }
 
-        public Task<UserModel> UpdateUserAsync(UserModel user)
+        public async Task<OperationResult<UserDto>> DeleteAsync(Guid userId)
         {
-            throw new NotImplementedException();
-        }
+            try {
 
-        public Task<UserModel> UpdateUserAsync(Guid userId, UpdateUserDto user)
-        {
-            throw new NotImplementedException();
+                var result = await _userRepository.DeleteAsync(userId);
+
+                return result
+                    ? OperationResult<UserDto>.Success(new UserDto())
+                    : OperationResult<UserDto>.Failure(OperationResultErrors.Failed);
+            }
+            catch (Exception ex) {
+                return OperationResult<UserDto>.Exception(ex);
+            }
         }
     }
 }

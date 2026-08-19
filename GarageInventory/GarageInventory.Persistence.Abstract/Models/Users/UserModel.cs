@@ -1,8 +1,7 @@
-﻿using GarageInventory.Core.Models.Items;
-using GarageInventory.Shared.Enums;
+﻿using GarageInventory.Shared.Enums;
 
-namespace GarageInventory.Core.Models.Users
-{
+namespace GarageInventory.Persistence.Abstract.Models;
+
     public class UserModel
     {
         public Guid Id { get; set; }
@@ -11,9 +10,5 @@ namespace GarageInventory.Core.Models.Users
         public string Surname { get; set; }
         public string Email { get; set; }
         public UserTypes UserType { get; set; } = 0;
-
-        public string Password { get; set; } = string.Empty;
         public string PasswordHash { get; set; } = string.Empty;
-        public bool IsActive { get; set; }
     }
-}

@@ -1,7 +1,5 @@
-﻿using GarageInventory.Shared.Enums;
+﻿namespace GarageInventory.Persistence.Abstract.Models;
 
-namespace GarageInventory.Core.Models.Items
-{
     public class ItemGroupModel
     {
         public int Id { get; set; }
@@ -14,4 +12,3 @@ namespace GarageInventory.Core.Models.Items
 
         public List<ItemModel> Items { get; set; } = new List<ItemModel>();
     }
-}

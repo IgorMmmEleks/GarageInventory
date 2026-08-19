@@ -1,6 +1,4 @@
-﻿using GarageInventory.Core.Models.Tools;
-
-namespace GarageInventory.Core.Database.Interfaces;
+﻿namespace GarageInventory.Persistence.Abstract.Interfaces;
 
     public interface IToolRepository
     {

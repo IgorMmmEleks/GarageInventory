@@ -1,11 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿namespace GarageInventory.Persistence.Abstract.Models;
 
-namespace GarageInventory.Core.Models.Items
-{
     public class ItemModel
     {
         public Guid ItemId { get; set; }
@@ -26,4 +20,3 @@ namespace GarageInventory.Core.Models.Items
 
         public ItemFotoModel? ItemFoto { get; set; }
     }
-}

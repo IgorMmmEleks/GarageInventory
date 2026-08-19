@@ -1,6 +1,5 @@
-﻿using GarageInventory.Core.Models;
+﻿namespace GarageInventory.Persistence.Abstract.Interfaces;
 
-namespace GarageInventory.Core.Database.Interfaces;
     public interface IManufactureRepository
     {
         Task<int> CreateAsync(ManufactureModel manufacture);

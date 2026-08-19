@@ -8,17 +8,29 @@ namespace GarageInventory.Core.Validators.Users
         public UpdateUserValidator()
         {
             RuleFor(x => x.Login)
-                .NotEmpty()
-                .MaximumLength(30);
+                .MaximumLength(30)
+                .When(x => !string.IsNullOrWhiteSpace(x.Login));
+
             RuleFor(x => x.Name)
-                .NotEmpty()
-                .MaximumLength(16);
+                .MaximumLength(16)
+                .When(x => !string.IsNullOrWhiteSpace(x.Name));
+
             RuleFor(x => x.Surname)
-                .NotEmpty()
-                .MaximumLength(20);
+                .MaximumLength(20)
+                .When(x => !string.IsNullOrWhiteSpace(x.Surname));
+
             RuleFor(x => x.Password)
                 .MinimumLength(6)
-                .MaximumLength(12);
+                .MaximumLength(12)
+                .When(x => !string.IsNullOrWhiteSpace(x.Password));
+
+            RuleFor(x => x.Email)
+                .EmailAddress()
+                .When(x => !string.IsNullOrWhiteSpace(x.Email));
+
+            RuleFor(x => x.UserType)
+                .Must(x => x > 0 && x <= 3)
+                .When(x => x.UserType != 0);
         }
     }
 }
