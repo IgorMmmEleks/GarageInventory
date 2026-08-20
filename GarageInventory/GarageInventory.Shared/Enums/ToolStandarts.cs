@@ -1,6 +1,6 @@
 ﻿namespace GarageInventory.Shared.Enums
 {
-    public enum ToolStandart
+    public enum ToolStandarts
     {
         Unknown = 0,
         Metric = 1,

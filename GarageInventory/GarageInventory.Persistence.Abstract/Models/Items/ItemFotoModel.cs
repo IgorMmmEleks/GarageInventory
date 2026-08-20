@@ -1,4 +1,6 @@
-﻿namespace GarageInventory.Persistence.Abstract.Models;
+﻿using GarageInventory.Persistence.Abstract.Models.Base;
+
+namespace GarageInventory.Persistence.Abstract.Models.Items;
 
     public class ItemFotoModel : BaseItemModel
     {

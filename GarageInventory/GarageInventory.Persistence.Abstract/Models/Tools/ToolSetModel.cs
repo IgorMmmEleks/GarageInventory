@@ -1,6 +1,7 @@
-﻿using GarageInventory.Shared.Enums;
+﻿using GarageInventory.Persistence.Abstract.Models.Base;
+using GarageInventory.Shared.Enums;
 
-namespace GarageInventory.Persistence.Abstract.Models;
+namespace GarageInventory.Persistence.Abstract.Models.Tools;
 
     public class ToolSetModel : BaseItemGroupModel
     {

@@ -3,13 +3,14 @@ using GarageInventory.Persistence.Abstract.Models;
 using GarageInventory.Shared.Enums;
 using Mapster;
 
-namespace GarageInventory.Core.Converters
+namespace GarageInventory.Core.Converters.Mapper
 {
     public class UserMappingConfig : IRegister
     {
         public void Register(TypeAdapterConfig config)
         {
             config.NewConfig<UserModel, UserDto>()
+                .Map(dest => dest.Id, src => src.Id)
                 .Map(dest => dest.Login, src => src.Login)
                 .Map(dest => dest.Name, src => src.Name)
                 .Map(dest => dest.Surname, src => src.Surname)
@@ -26,6 +27,7 @@ namespace GarageInventory.Core.Converters
                 .Map(dest => dest.UserType, src => UserTypes.Viewer);
 
             config.NewConfig<UpdateUserDto, UserModel>()
+                .Map(dest => dest.Id, src => src.Id)
                 .Map(dest => dest.Login, src => src.Login, srcCond => !string.IsNullOrEmpty(srcCond.Login))
                 .Map(dest => dest.Name, src => src.Name, srcCond => !string.IsNullOrEmpty(srcCond.Name))
                 .Map(dest => dest.Surname, src => src.Surname, srcCond => !string.IsNullOrEmpty(srcCond.Surname))
