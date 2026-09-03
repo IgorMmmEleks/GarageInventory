@@ -1,4 +1,4 @@
-﻿
+﻿using GarageInventory.Persistence.Abstract.Models.Items;
 
 namespace GarageInventory.Persistence.Abstract.Interfaces;
 

@@ -1,4 +1,6 @@
-﻿namespace GarageInventory.Persistence.Abstract.Interfaces;
+﻿using GarageInventory.Persistence.Abstract.Models.Tools;
+
+namespace GarageInventory.Persistence.Abstract.Interfaces;
 
     public interface IToolRepository
     {

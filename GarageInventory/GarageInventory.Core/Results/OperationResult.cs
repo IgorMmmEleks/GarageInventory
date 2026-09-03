@@ -2,7 +2,7 @@
 
 namespace GarageInventory.Core.Results
 {
-    public class OperationResult<TResult> where TResult : class
+    public class OperationResult<TResult>
     {
         public TResult? Value { get; private set; }
         public bool IsSuccess { get; private set; } = false;

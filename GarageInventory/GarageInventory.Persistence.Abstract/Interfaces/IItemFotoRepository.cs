@@ -1,4 +1,6 @@
-﻿namespace GarageInventory.Persistence.Abstract.Interfaces;
+﻿using GarageInventory.Persistence.Abstract.Models.Items;
+
+namespace GarageInventory.Persistence.Abstract.Interfaces;
 
     public interface IItemFotoRepository
     {

@@ -62,8 +62,7 @@ namespace GarageInventory.Persistence.Repositories
                         Surname = user.Surname,
                         Email = user.Email,
                         UserType = (int)user.UserType,
-                        PasswordHash = user.PasswordHash,
-                        IsActive = user.IsActive
+                        PasswordHash = user.PasswordHash
                     });
 
                 if (affectedRows > 0)

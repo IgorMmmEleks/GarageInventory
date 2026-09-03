@@ -4,21 +4,17 @@ using GarageInventory.Core.Services.Interfaces;
 using GarageInventory.Persistence.Abstract.Interfaces;
 using GarageInventory.Persistence.Abstract.Models;
 using Microsoft.AspNetCore.Identity;
-using MapsterMapper;
 using GarageInventory.Shared.Enums;
-using Mapster;
 
 namespace GarageInventory.Core.Services
 {
     public class UserService : IUserService
     {
-        private readonly IMapper _mapper;
         private readonly IUserRepository _userRepository;
         private readonly IPasswordHasher<UserModel> _passwordHasher;
 
-        public UserService(IMapper mapper, IUserRepository userRepository, IPasswordHasher<UserModel> passwordHasher)
+        public UserService(IUserRepository userRepository, IPasswordHasher<UserModel> passwordHasher)
         {
-            _mapper = mapper;
             _userRepository = userRepository;
             _passwordHasher = passwordHasher;
         }
@@ -44,19 +40,30 @@ namespace GarageInventory.Core.Services
             return _mapper.Map<UserModel, UserDto>(user);
         }
 
-        public async Task<OperationResult<List<UserDto>>> GetAllAsync(int skip, int take)
+        public async Task<OperationResult<IEnumerable<UserDto>>> GetAllAsync(int skip, int take)
         {
             try {
 
                 var userList = await _userRepository.GetAllAsync(skip, take);
 
                 if (userList == null)
-                    return OperationResult<List<UserDto>>.Failure(OperationResultErrors.Failed);
+                    return OperationResult<IEnumerable<UserDto>>.Failure(OperationResultErrors.Failed);
 
-                return OperationResult<List<UserDto>>.Success(_mapper.Map<List<UserModel>, List<UserDto>>(userList.ToList()));
+                var result = userList.Select(u =>
+                    new UserDto
+                    {
+                        Id = u.Id,
+                        Login = u.Login,
+                        Name = u.Name,
+                        Surname = u.Surname,
+                        Email = u.Email,
+                        UserType = u.UserType
+                    });
+
+                return OperationResult<IEnumerable<UserDto>>.Success(result);
             }
             catch (Exception ex) {
-                return OperationResult<List<UserDto>>.Exception(ex);
+                return OperationResult<IEnumerable<UserDto>>.Exception(ex);
             }
         }
 
@@ -69,7 +76,17 @@ namespace GarageInventory.Core.Services
                 if (user == null)
                     return OperationResult<UserDto>.Failure(OperationResultErrors.NotFound);
 
-                return OperationResult<UserDto>.Success(_mapper.Map<UserModel, UserDto>(user));
+                var result = new UserDto
+                {
+                    Id = user.Id,
+                    Login = user.Login,
+                    Name = user.Name,
+                    Surname = user.Surname,
+                    Email = user.Email,
+                    UserType = user.UserType
+                };
+
+                return OperationResult<UserDto>.Success(result);
             }
             catch (Exception ex) {
                 return OperationResult<UserDto>.Exception(ex);
@@ -83,7 +100,15 @@ namespace GarageInventory.Core.Services
                 if (await _userRepository.ExistsAsync(createUserDto.Email))
                     return OperationResult<UserDto>.Failure(OperationResultErrors.AlreadyExists);
 
-                var user = _mapper.Map<CreateUserDto, UserModel>(createUserDto);
+                var user = new UserModel
+                {
+                    Id = Guid.NewGuid(),
+                    Login = createUserDto.Login,
+                    Name = createUserDto.Name,
+                    Surname = createUserDto.Surname,
+                    Email = createUserDto.Email,
+                    UserType = UserTypes.Viewer
+                };
 
                 user.PasswordHash = _passwordHasher.HashPassword(user, createUserDto.Password);
 
@@ -92,7 +117,18 @@ namespace GarageInventory.Core.Services
                 if (userId == null)
                     return OperationResult<UserDto>.Failure(OperationResultErrors.Failed);
 
-                return OperationResult<UserDto>.Success(_mapper.Map<UserModel, UserDto>(user));
+                var result = new UserDto
+                {
+                    Id = userId.Value,
+                    Login = user.Login,
+                    Name = user.Name,
+                    Surname = user.Surname,
+                    Email = user.Email,
+                    UserType = user.UserType,
+                    PasswordHash = user.PasswordHash
+                };
+
+                return OperationResult<UserDto>.Success(result);
             }
             catch (Exception ex) {
                 return OperationResult<UserDto>.Exception(ex);
@@ -108,17 +144,31 @@ namespace GarageInventory.Core.Services
                 if(user == null)
                     return OperationResult<UserDto>.Failure(OperationResultErrors.NotFound);
 
-                updateUserDto.Adapt(user);
+                user.Login = string.IsNullOrEmpty(updateUserDto.Login) ? user.Login : updateUserDto.Login;
+                user.Surname = string.IsNullOrEmpty(updateUserDto.Surname) ? user.Surname : updateUserDto.Surname;
+                user.Email = string.IsNullOrEmpty(updateUserDto.Email) ? user.Email : updateUserDto.Email;
+                user.UserType = updateUserDto.UserType == 0 ? user.UserType : (UserTypes)updateUserDto.UserType;
 
-                if(!string.IsNullOrEmpty(updateUserDto.Password))
+                if (!string.IsNullOrEmpty(updateUserDto.Password))
                     user.PasswordHash = _passwordHasher.HashPassword(user, updateUserDto.Password);
 
-                var result = await _userRepository.UpdateAsync(user);
+                var updateResult = await _userRepository.UpdateAsync(user);
 
-                if(!result)
+                if(!updateResult)
                     return OperationResult<UserDto>.Failure(OperationResultErrors.Failed);
 
-                return OperationResult<UserDto>.Success(_mapper.Map<UserModel, UserDto>(user));
+                var result = new UserDto
+                {
+                    Id = user.Id,
+                    Login = user.Login,
+                    Name = user.Name,
+                    Surname = user.Surname,
+                    Email = user.Email,
+                    UserType = user.UserType,
+                    PasswordHash = user.PasswordHash
+                };
+
+                return OperationResult<UserDto>.Success(result);
             }
             catch (Exception ex) {
                 return OperationResult<UserDto>.Exception(ex);

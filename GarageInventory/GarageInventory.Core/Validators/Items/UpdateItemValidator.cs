@@ -7,9 +7,6 @@ namespace GarageInventory.Core.Validators.Items
     {
         public UpdateItemValidator() 
         {
-            RuleFor(x => x.Password)
-                .MinimumLength(6)
-                .MaximumLength(12);
         }
     }
 }
