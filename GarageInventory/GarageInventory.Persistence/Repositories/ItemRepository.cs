@@ -26,37 +26,7 @@ namespace GarageInventory.Persistence.Repositories
             }
         }
 
-        public Task<int> CreateAsync(ItemModel item)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task DeleteAsync(int id)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<IEnumerable<ItemModel>> GetAllAsync()
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<ItemModel?> GetByIdAsync(int id)
-        {
-            throw new NotImplementedException();
-        }
-
         public async Task<IEnumerable<ItemModel>> GetByTypePaginetedAsync(ItemTypes itemType, int itemSubType = 0, int skip = 0, int take = 10)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<IEnumerable<ItemModel>> GetItemsByGroupIdAsync(int groupId)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task UpdateAsync(ItemModel item)
         {
             throw new NotImplementedException();
         }

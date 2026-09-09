@@ -163,7 +163,7 @@ namespace GarageInventory.Api.Controllers
             if (userId == null || Guid.Empty == userId)
                 return BadRequest(new { message = "User ID is required." });
 
-            var result = await _userService.DeleteAsync(userId);
+            var result = await _userService.DeleteAsync(userId.Value);
 
             if (result.IsSuccess)
             {

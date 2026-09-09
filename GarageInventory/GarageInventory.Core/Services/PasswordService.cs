@@ -1,5 +1,5 @@
-﻿using GarageInventory.Core.Models.Users;
-using GarageInventory.Core.Services.Interfaces;
+﻿using GarageInventory.Core.Services.Interfaces;
+using GarageInventory.Persistence.Abstract.Models;
 using Microsoft.AspNetCore.Identity;
 
 namespace GarageInventory.Core.Services

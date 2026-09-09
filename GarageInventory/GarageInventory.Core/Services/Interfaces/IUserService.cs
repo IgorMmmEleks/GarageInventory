@@ -5,9 +5,9 @@ namespace GarageInventory.Core.Services.Interfaces
 {
     public interface IUserService
     {
-        Task<UserDto?> ValidateCredentialsAsync(string login, string password);
+        Task<UserDto?> ValidateCredsAndGetAsync(string login, string password);
 
-        Task<OperationResult<List<UserDto>>> GetAllAsync(int skip, int take);
+        Task<OperationResult<IEnumerable<UserDto>>> GetAllAsync(int skip, int take);
 
         Task<OperationResult<UserDto>> GetAsync(string userLogin);
 

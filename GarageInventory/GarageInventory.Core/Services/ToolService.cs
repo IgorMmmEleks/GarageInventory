@@ -1,17 +1,10 @@
-﻿using GarageInventory.Core.DTOs.Items;
-using GarageInventory.Core.DTOs.Tools;
+﻿using GarageInventory.Core.DTOs.Tools;
 using GarageInventory.Core.Results;
 using GarageInventory.Core.Services.Interfaces;
 using GarageInventory.Persistence.Abstract.Interfaces;
-using GarageInventory.Persistence.Abstract.Models.Base;
 using GarageInventory.Persistence.Abstract.Models.Items;
 using GarageInventory.Persistence.Abstract.Models.Tools;
 using GarageInventory.Shared.Enums;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace GarageInventory.Core.Services
 {
@@ -45,13 +38,13 @@ namespace GarageInventory.Core.Services
             }
         }
 
-        public async Task<OperationResult<IEnumerable<ToolItemDto>>> GetAsync(ToolTypes toolType, int skip, int take)
+        public async Task<OperationResult<IEnumerable<ItemToolDto>>> GetAsync(ToolTypes toolType, int skip, int take)
         {
             try
             {
-                var items = await _itemRepository.GetItemsByTypeAsync(ItemTypes.Tool, (int)toolType, skip, take);
+                var toolItems = await _toolRepository.GetByTypePaginetedAsync((int)toolType, skip, take);
                 
-                var toolItemDtos = items.Select(item => new ToolItemDto
+                var toolItemDtos = toolItems.Select(item => new ItemToolDto
                 {
                     ItemType = ItemTypes.Tool,
                     ItemSubType = item.ItemSubType,
@@ -59,47 +52,89 @@ namespace GarageInventory.Core.Services
                     ItemCondition = item.ItemCondition,
                     WasRepaired = item.WasRepaired,
                     ManufactureId = item.ManufactureId,
-                    ToolDto = item.ToolDto
+                    ToolDto = item.SubModel is ToolModel toolModel ? new ToolDto
+                    {
+                        Description = toolModel.Description,
+                        ToolType = (ToolTypes)toolModel.ToolType,
+                        ToolStandart = (ToolStandarts)toolModel.ToolStandart,
+                        ToolName = toolModel.ToolName,
+                        ToolSpec = toolModel.ToolSpec
+                    } : null
                 });
 
-                return OperationResult<IEnumerable<ToolItemDto>>.Success(toolItemDtos);
+                return OperationResult<IEnumerable<ItemToolDto>>.Success(toolItemDtos);
             }
             catch (Exception ex)
             {
-                return OperationResult<IEnumerable<ToolItemDto>>.Exception(ex);
+                return OperationResult<IEnumerable<ItemToolDto>>.Exception(ex);
             }
         }
 
-        public async Task<OperationResult<ToolItemDto>> AddAsync(CreateToolItemDto createToolItemDto)
+        public async Task<OperationResult<ItemToolDto>> AddAsync(CreateItemToolDto createItemToolDto)
         {
             try
             {
-                var item = new ItemModel
+                var toolItem = new ItemModel
                 {
                     ItemId = Guid.NewGuid(),
                     ItemType = (int)ItemTypes.Tool,
-                    ItemSubType = createToolItemDto.ItemSubType,
-                    ItemCondition = createToolItemDto.ItemCondition,
-                    WasRepaired = createToolItemDto.WasRepaired,
-                    ManufactureId = createToolItemDto.ManufactureId
+                    ItemSubType = createItemToolDto.ItemSubType,
+                    ItemCondition = createItemToolDto.ItemCondition,
+                    WasRepaired = createItemToolDto.WasRepaired,
+                    ManufactureId = createItemToolDto.ManufactureId,
+                    CreatedAt = DateTime.UtcNow,
                 };
 
-        var tool = new ToolModel
+                toolItem.SubModel = new ToolModel 
+                { 
+                    ItemId = toolItem.ItemId,
+                    Description = createItemToolDto.ToolDto.Description,
+                    ToolType = (int)createItemToolDto.ToolDto.ToolType,
+                    ToolStandart = (int)createItemToolDto.ToolDto.ToolStandart,
+                    ToolName = createItemToolDto.ToolDto.ToolName,
+                    ToolSpec = createItemToolDto.ToolDto.ToolSpec,
+                };
 
-                if (createToolItemDto.ItemGroupId != null && createToolItemDto.ItemGroupId > 0)
+                if (createItemToolDto.ItemGroupId != null && createItemToolDto.ItemGroupId > 0)
                 {
-                    var toolSetId = await _toolSetRepository.Value.Exists(createToolItemDto.ItemGroupId.Value);
-                    if (toolSetId != 0)
-                        item.ItemGroupId = createToolItemDto.ItemGroupId;
+                    if (await _toolSetRepository.Value.ExistsAsync(createItemToolDto.ItemGroupId.Value))
+                        toolItem.ItemGroupId = createItemToolDto.ItemGroupId;
                 }
 
+                bool result = await _toolRepository.AddAsync(toolItem);
+
+                if(result)
+                {
+                    var itemToolDto = new ItemToolDto
+                    {
+                        ItemType = ItemTypes.Tool,
+                        ItemSubType = toolItem.ItemSubType,
+                        ItemGroupId = toolItem.ItemGroupId,
+                        ItemCondition = toolItem.ItemCondition,
+                        WasRepaired = toolItem.WasRepaired,
+                        ManufactureId = toolItem.ManufactureId,
+                        ToolDto = new ToolDto
+                        {
+                            Description = toolItem.SubModel.Description,
+                            ToolType = (ToolTypes)((ToolModel)toolItem.SubModel).ToolType,
+                            ToolStandart = (ToolStandarts)((ToolModel)toolItem.SubModel).ToolStandart,
+                            ToolName = ((ToolModel)toolItem.SubModel).ToolName,
+                            ToolSpec = ((ToolModel)toolItem.SubModel).ToolSpec
+                        }
+                    };
+
+                    return OperationResult<ItemToolDto>.Success(itemToolDto);
+                }
+                else
+                {
+                    return OperationResult<ItemToolDto>.Failure(OperationResultErrors.Failed);
+                }
 
             }
             catch (Exception ex)
             {
-                return OperationResult<ToolItemDto>.Exception(ex);
+                return OperationResult<ItemToolDto>.Exception(ex);
             }
-
         }
     }
 }

@@ -4,8 +4,6 @@ namespace GarageInventory.Persistence.Entities
 {
     public class Rim : BaseEntity
     {
-        public Guid ItemId { get; set; }
-
         public int RimType { get; set; }
 
         public int Radius { get; set; }

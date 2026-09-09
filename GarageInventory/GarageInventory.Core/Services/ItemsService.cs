@@ -47,7 +47,16 @@ namespace GarageInventory.Core.Services
                 if (subItems == null)
                     return OperationResult<IEnumerable<ItemDto>>.Failure(OperationResultErrors.Failed);
 
-                //return OperationResult<IEnumerable<ItemDto>>.Success(_mapper.Map<IEnumerable<ItemModel>, IEnumerable<ItemDto>>(items));
+                return OperationResult<IEnumerable<ItemDto>>.Success(
+                        items.Select(i => new ItemDto
+                        {
+                            //ItemId = i.ItemId,
+                            //Name = i.Name,
+                            //Description = i.Description,
+                            //ItemType = i.ItemType,
+                            //ItemSubType = i.ItemSubType,
+                            //SubItem = subItems.FirstOrDefault(s => s.ItemId == i.ItemId)
+                        }).ToList());
             }
             catch (Exception ex)
             {
@@ -65,15 +74,19 @@ namespace GarageInventory.Core.Services
 
         public async Task<List<BaseItemModel>> GetSubItems(List<Guid> itemIds, ItemTypes itemType, int itemSubType)
         {
-            itemType switch
+            List<BaseItemModel> result = itemType switch
             {
-                ItemTypes.Tool => await _toolRepository.Value.GetByItemIdsAsync(itemIds),
+                ItemTypes.Tool => throw new NotImplementedException(), //await _toolRepository.Value.GetByItemIdsAsync(itemIds),
                 ItemTypes.Wheel => throw new NotImplementedException(),
                 ItemTypes.Clothing => throw new NotImplementedException(),
                 ItemTypes.MotorParts => throw new NotImplementedException(),
+                ItemTypes.Unknown => throw new NotImplementedException(),
                 _ => throw new NotImplementedException(),
             };
+
+            return result;
         }
+
         #endregion
     }
 }

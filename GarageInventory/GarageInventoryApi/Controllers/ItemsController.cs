@@ -1,4 +1,6 @@
 ﻿using GarageInventory.Core.DTOs.Items;
+using GarageInventory.Core.DTOs.Tools;
+using GarageInventory.Core.Results;
 using GarageInventory.Core.Services.Interfaces;
 using GarageInventory.Shared.Enums;
 using Microsoft.AspNetCore.Authorization;
@@ -101,7 +103,9 @@ namespace GarageInventory.Api.Controllers
         public async Task<IActionResult> AddItem(
             [FromBody] CreateItemDto item)
         {
-            var result = await _itemsService.AddAsync(item);
+
+            //TODO Update Code
+            var result = OperationResult<IEnumerable<ItemToolDto>>.Failure(OperationResultErrors.None); // await _itemsService.AddAsync(item); 
 
             if (result.IsSuccess)
             {

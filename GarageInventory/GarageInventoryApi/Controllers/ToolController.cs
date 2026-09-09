@@ -1,4 +1,5 @@
-﻿using GarageInventory.Core.Services.Interfaces;
+﻿using GarageInventory.Core.DTOs.Tools;
+using GarageInventory.Core.Services.Interfaces;
 using GarageInventory.Shared.Enums;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -84,9 +85,9 @@ namespace GarageInventory.Api.Controllers
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [Authorize(Roles = "Admin,Manager")]
         public async Task<IActionResult> AddTool(
-            [FromBody] ToolDto toolDto)
+            [FromBody] CreateItemToolDto itemToolDto)
         {
-            var result = await _toolService.AddAsync();
+            var result = await _toolService.AddAsync(itemToolDto);
 
             if (result.IsSuccess)
             {
@@ -96,9 +97,8 @@ namespace GarageInventory.Api.Controllers
             {
                 return result.Error switch
                 {
-                    OperationResultErrors.NotFound => NotFound(new { message = $"No tools, type of {toolType}, were found." }),
-                    OperationResultErrors.Exception => Problem("An exception occurred while retrieving tools."),
-                    _ => BadRequest(new { message = "An error occurred while retrieving tools." })
+                    OperationResultErrors.Exception => Problem("An exception occurred while adding the tool."),
+                    _ => BadRequest(new { message = "An error occurred while adding the tool." })
                 };
             }
         }

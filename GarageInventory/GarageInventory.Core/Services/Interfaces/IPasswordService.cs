@@ -1,4 +1,4 @@
-﻿using GarageInventory.Core.Models.Users;
+﻿using GarageInventory.Persistence.Abstract.Models;
 
 namespace GarageInventory.Core.Services.Interfaces
 {

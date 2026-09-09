@@ -1,4 +1,4 @@
-﻿using GarageInventory.Core.Database.Interfaces;
+﻿using GarageInventory.Persistence.Abstract.Interfaces;
 using GarageInventory.Persistence.Database;
 using GarageInventory.Persistence.Database.Interfaces;
 using GarageInventory.Persistence.Repositories;
@@ -23,12 +23,9 @@ namespace GarageInventory.Persistence.Configuration
 
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IItemRepository, ItemRepository>();
-            //services.AddScoped<IItemFotoRepository, ItemFotoRepository>();
-            //services.AddScoped<IItemGroupRepository, ItemGroupRepository>();
             services.AddScoped<IManufactureRepository, ManufactureRepository>();
-            //services.AddScoped<IToolRepository, ToolRepository>();
-            //services.AddScoped<IToolSetRepository, ToolSetRepository>();
-            //services.AddScoped<IRimRepository, RimRepository>();
+            services.AddScoped<IToolRepository, ToolRepository>();
+            services.AddScoped<IToolSetRepository, ToolSetRepository>();
 
             return services;
         }
