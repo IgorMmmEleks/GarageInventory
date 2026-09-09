@@ -2,8 +2,9 @@
 
 namespace GarageInventory.Core.DTOs.Tools
 {
-    public class CreateToolItemDto
+    public class ItemToolDto
     {
+        public ItemTypes ItemType { get; set; } = ItemTypes.Tool;
         public int ItemSubType { get; set; }
 
         public int? ItemGroupId { get; set; }

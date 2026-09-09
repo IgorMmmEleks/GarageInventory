@@ -3,7 +3,7 @@ using GarageInventory.Shared.Enums;
 
 namespace GarageInventory.Core.DTOs.Tools
 {
-    public class ToolDto //: BaseItemDto
+    public class ToolDto : BaseItemDto
     {
         public ToolTypes ToolType { get; set; }
 

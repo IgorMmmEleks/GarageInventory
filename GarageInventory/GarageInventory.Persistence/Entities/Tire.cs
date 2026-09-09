@@ -8,8 +8,6 @@ namespace GarageInventory.Persistence.Entities
 {
     public class Tire : BaseEntity
     {
-        public Guid ItemId { get; set; }
-
         public int TireType { get; set; }
 
         public int Radius { get; set; }

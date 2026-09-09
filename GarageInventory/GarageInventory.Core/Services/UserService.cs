@@ -19,7 +19,7 @@ namespace GarageInventory.Core.Services
             _passwordHasher = passwordHasher;
         }
 
-        public async Task<UserDto?> ValidateCredentialsAsync(string login, string password)
+        public async Task<UserDto?> ValidateCredsAndGetAsync(string login, string password)
         {
             if (string.IsNullOrEmpty(login) || string.IsNullOrEmpty(password))
                 return null;
@@ -37,7 +37,15 @@ namespace GarageInventory.Core.Services
             if (valid == PasswordVerificationResult.Failed)
                 return null;
 
-            return _mapper.Map<UserModel, UserDto>(user);
+            return new UserDto
+                {
+                    Id = user.Id,
+                    Login = user.Login,
+                    Name = user.Name,
+                    Surname = user.Surname,
+                    Email = user.Email,
+                    UserType = user.UserType
+                };
         }
 
         public async Task<OperationResult<IEnumerable<UserDto>>> GetAllAsync(int skip, int take)

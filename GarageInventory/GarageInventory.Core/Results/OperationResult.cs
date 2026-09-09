@@ -10,7 +10,7 @@ namespace GarageInventory.Core.Results
         public string? ExceptionText { get; private set; }
 
 
-        private OperationResult(TResult result, OperationResultErrors? error = null, string? exceptionText = null)
+        private OperationResult(TResult? result, OperationResultErrors? error = null, string? exceptionText = null)
         {
             Value = result;
             IsSuccess = error == null;
@@ -26,12 +26,12 @@ namespace GarageInventory.Core.Results
 
         public static OperationResult<TResult> Failure(OperationResultErrors error)
         {
-            return new OperationResult<TResult>(null, error);
+            return new OperationResult<TResult>(default, error);
         }
 
         public static OperationResult<TResult> Exception(Exception exception)
         {
-            return new OperationResult<TResult>(null, OperationResultErrors.Exception, 
+            return new OperationResult<TResult>(default, OperationResultErrors.Exception, 
                 $"Exception.Message - {exception.Message}. Exception.InnerException - {exception.InnerException?.Message}");
         }
     }

@@ -1,10 +1,5 @@
-﻿using GarageInventory.Core.Database.Interfaces;
-using GarageInventory.Core.Services.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using GarageInventory.Core.Services.Interfaces;
+using GarageInventory.Persistence.Abstract.Interfaces;
 
 namespace GarageInventory.Core.Services
 {
@@ -19,9 +14,9 @@ namespace GarageInventory.Core.Services
             _passwordService = passwordService;
         }
 
-        public async Task<bool> LoginAsync(string nickName, string password)
+        public async Task<bool> LoginAsync(string login, string password)
         {
-            var user = await _userRepository.GetByUserNicknameAsync(nickName);
+            var user = await _userRepository.GetByUserLoginAsync(login);
 
             if (user == null)
                 return false;

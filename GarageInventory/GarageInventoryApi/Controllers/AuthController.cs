@@ -30,7 +30,7 @@ namespace GarageInventory.Api.Controllers
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<IActionResult> Login([FromBody] LoginRequestDto request)
         {
-            var user = await _userService.ValidateCredentialsAsync(request.Login, request.Password);
+            var user = await _userService.ValidateCredsAndGetAsync(request.Login, request.Password);
 
             if (user == null)
                 return Unauthorized(new { message = "Invalid credentials." });

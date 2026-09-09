@@ -1,11 +1,10 @@
-﻿using GarageInventory.Persistence.Abstract.Models.Tools;
+﻿using GarageInventory.Persistence.Abstract.Models.Items;
 
 namespace GarageInventory.Persistence.Abstract.Interfaces;
 
     public interface IToolRepository
     {
-        Task<int> CreateAsync(ToolModel tool);
-        Task UpdateAsync(ToolModel tool);
-        Task DeleteAsync(Guid itemId);
-        Task<ToolModel?> GetByItemIdAsync(Guid itemId);
-    }
+        Task<bool> AddAsync(ItemModel toolItem);
+
+        Task<IEnumerable<ItemModel>> GetByTypePaginetedAsync(int toolType, int skip, int take);
+}
