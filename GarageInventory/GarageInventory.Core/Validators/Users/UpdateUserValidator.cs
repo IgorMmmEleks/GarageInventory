@@ -7,6 +7,11 @@ namespace GarageInventory.Core.Validators.Users
     {
         public UpdateUserValidator()
         {
+            RuleFor(x => x.Id)
+                .NotEmpty()
+                .NotEqual(Guid.Empty)
+                .Must(x => x != default(Guid));
+
             RuleFor(x => x.Login)
                 .MaximumLength(30)
                 .When(x => !string.IsNullOrWhiteSpace(x.Login));

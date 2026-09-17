@@ -1,30 +1,28 @@
 ﻿using Dapper;
 using GarageInventory.Persistence.Database.Interfaces;
-using Microsoft.Data.Sqlite;
 
 namespace GarageInventory.Persistence.Database
 {
     public class DatabaseInitializer : IDatabaseInitializer
     {
-
-        //VERIFY AND UPDATE !!!
         private readonly string sqlInitializer = @"
-            CREATE TABLE IF NOT EXISTS Items (
-                Id INTEGER PRIMARY KEY AUTOINCREMENT,
-                Name TEXT NOT NULL
-            );
-            CREATE TABLE IF NOT EXISTS Products (
-                ItemId INTEGER PRIMARY KEY,
-                Sku TEXT NOT NULL,
-                Price REAL NOT NULL,
-                FOREIGN KEY(ItemId) REFERENCES Items(Id)
-            );";
+            CREATE TABLE IF NOT EXISTS Users (
+                Id BLOB PRIMARY KEY,
+                Login TEXT NOT NULL UNIQUE,
+                Name TEXT NOT NULL,
+                Surname TEXT NOT NULL,
+                Email TEXT NOT NULL UNIQUE,
+                PasswordHash TEXT NOT NULL,
+                UserType INTEGER NOT NULL,
+                CreatedAt TEXT NOT NULL,
+                UpdatedAt TEXT
+            )";
 
         private readonly IDbConnectionFactory _connectionFactory;
 
         public DatabaseInitializer(IDbConnectionFactory connectionFactory)
         {
-            _connectionFactory = connectionFactory; 
+            _connectionFactory = connectionFactory;
         }
 
         public async Task InitializeDatabaseAsync(string connectionString)

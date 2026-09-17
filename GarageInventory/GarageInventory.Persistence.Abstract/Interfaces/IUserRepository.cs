@@ -8,7 +8,9 @@ namespace GarageInventory.Persistence.Abstract.Interfaces;
 
         Task<IEnumerable<UserModel>> GetAllAsync(int skip, int take);
 
-        Task<UserModel?> GetByUserLoginAsync(string login);
+        Task<UserModel?> GetByLoginAsync(string login);
+
+        Task<UserModel?> GetByIdAsync(Guid id);
 
         Task<Guid?> CreateAsync(UserModel user);
 

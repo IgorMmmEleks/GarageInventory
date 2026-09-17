@@ -16,7 +16,7 @@ namespace GarageInventory.Core.Services
 
         public async Task<bool> LoginAsync(string login, string password)
         {
-            var user = await _userRepository.GetByUserLoginAsync(login);
+            var user = await _userRepository.GetByLoginAsync(login);
 
             if (user == null)
                 return false;

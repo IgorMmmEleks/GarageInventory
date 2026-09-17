@@ -4,6 +4,17 @@ using GarageInventory.Shared.Enums;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
+
+//TODO - REMOVE!!!
+//{
+//    "login": "igm",
+//  "name": "Igor",
+//  "surname": "Makeiev",
+//  "email": "ig@icloud.com",
+//  "password": "qwerty"
+//}
+
+
 namespace GarageInventory.Api.Controllers
 {
     /// <summary>
@@ -133,7 +144,7 @@ namespace GarageInventory.Api.Controllers
 
             if (result.IsSuccess)
             {
-                return Ok(new { message = "User updated successfully." });
+                return Ok(new {result.Value, message = "User updated successfully." });
             }
             else
             {
