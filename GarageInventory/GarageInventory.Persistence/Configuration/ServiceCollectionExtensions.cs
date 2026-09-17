@@ -1,4 +1,5 @@
-﻿using GarageInventory.Persistence.Abstract.Interfaces;
+﻿using Dapper;
+using GarageInventory.Persistence.Abstract.Interfaces;
 using GarageInventory.Persistence.Database;
 using GarageInventory.Persistence.Database.Interfaces;
 using GarageInventory.Persistence.Repositories;
@@ -18,9 +19,15 @@ namespace GarageInventory.Persistence.Configuration
                 throw new InvalidOperationException("Connection string 'SQLiteConnection' is not defined.");
             }
 
+            SQLitePCL.Batteries.Init();
+            SqlMapper.AddTypeHandler(new GuidTypeHandler());
+
             services.AddSingleton<IDbConnectionFactory>(
                    new SqliteConnectionFactory(connectionString));
 
+            services.AddScoped<IDatabaseInitializer, DatabaseInitializer>();
+
+            services.AddScoped<GuidTypeHandler, GuidTypeHandler>();
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IItemRepository, ItemRepository>();
             services.AddScoped<IManufactureRepository, ManufactureRepository>();

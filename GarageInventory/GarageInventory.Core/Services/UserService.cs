@@ -24,7 +24,7 @@ namespace GarageInventory.Core.Services
             if (string.IsNullOrEmpty(login) || string.IsNullOrEmpty(password))
                 return null;
 
-            var user = await _userRepository.GetByUserLoginAsync(login);
+            var user = await _userRepository.GetByLoginAsync(login);
 
             if (user == null)
                 return null;
@@ -79,7 +79,7 @@ namespace GarageInventory.Core.Services
         {
             try {
 
-                var user = await _userRepository.GetByUserLoginAsync(userLogin);
+                var user = await _userRepository.GetByLoginAsync(userLogin);
 
                 if (user == null)
                     return OperationResult<UserDto>.Failure(OperationResultErrors.NotFound);
@@ -147,7 +147,7 @@ namespace GarageInventory.Core.Services
         {
             try {
 
-                var user = await _userRepository.GetByUserLoginAsync(updateUserDto.Login);
+                var user = await _userRepository.GetByIdAsync(updateUserDto.Id);
 
                 if(user == null)
                     return OperationResult<UserDto>.Failure(OperationResultErrors.NotFound);

@@ -30,19 +30,30 @@ namespace GarageInventory.Persistence.Repositories
             using (var connection = _connectionFactory.CreateConnection())
             {
                 var users = await connection.QueryAsync<UserModel>(
-                    "SELECT * FROM Users ORDER BY Nickname OFFSET @Skip ROWS FETCH NEXT @Take ROWS ONLY",
+                    "SELECT * FROM Users ORDER BY Login, Id LIMIT @Take OFFSET @Skip",
                     new { Skip = skip, Take = take });
                 return users;
             }
         }
 
-        public async Task<UserModel?> GetByUserLoginAsync(string login)
+        public async Task<UserModel?> GetByLoginAsync(string login)
         {
             using (var connection = _connectionFactory.CreateConnection())
             {
                 var user = await connection.QuerySingleOrDefaultAsync<UserModel>(
-                    "SELECT * FROM Users WHERE Nickname = @Nickname",
-                    new { Nickname = login });
+                    "SELECT (1) FROM Users WHERE Login = @Login",
+                    new { Login = login });
+                return user;
+            }
+        }
+
+        public async Task<UserModel?> GetByIdAsync(Guid id)
+        {
+            using (var connection = _connectionFactory.CreateConnection())
+            {
+                var user = await connection.QuerySingleOrDefaultAsync<UserModel>(
+                    "SELECT * FROM Users WHERE Id = @Id",
+                    new { Id = id });
                 return user;
             }
         }
@@ -52,17 +63,18 @@ namespace GarageInventory.Persistence.Repositories
             using (var connection = _connectionFactory.CreateConnection())
             {
                 var affectedRows = await connection.ExecuteAsync(
-                    "INSERT INTO Users (Id, Nickname, Name, Surname, Email, UserType, PasswordHash, IsActive) " +
-                    "VALUES (@Id, @Nickname, @Name, @Surname, @Email, @UserType, @PasswordHash, @IsActive)",
+                    "INSERT INTO Users (Id, Login, Name, Surname, Email, UserType, PasswordHash, CreatedAt) " +
+                    "VALUES (@Id, @Login, @Name, @Surname, @Email, @UserType, @PasswordHash, @CreatedAt)",
                     new
                     {
                         Id = user.Id,
-                        Nickname = user.Login,
+                        Login = user.Login,
                         Name = user.Name,
                         Surname = user.Surname,
                         Email = user.Email,
                         UserType = (int)user.UserType,
-                        PasswordHash = user.PasswordHash
+                        PasswordHash = user.PasswordHash,
+                        CreatedAt = DateTime.UtcNow
                     });
 
                 if (affectedRows > 0)
@@ -76,9 +88,27 @@ namespace GarageInventory.Persistence.Repositories
 
         public async Task<bool> UpdateAsync(UserModel user)
         {
-            throw new NotImplementedException();
-        }
+            using (var connection = _connectionFactory.CreateConnection())
+            {
+                var affectedRows = await connection.ExecuteAsync(
+                    "UPDATE Users SET Login = @Login, Name = @Name, Surname = @Surname, Email = @Email, " +
+                    "UserType = @UserType, PasswordHash = @PasswordHash, UpdatedAt = @UpdatedAt " + 
+                    "WHERE Id = @Id",
+                    new
+                    {
+                        Id = user.Id,
+                        Login = user.Login,
+                        Name = user.Name,
+                        Surname = user.Surname,
+                        Email = user.Email,
+                        UserType = (int)user.UserType,
+                        PasswordHash = user.PasswordHash,
+                        UpdatedAt = DateTime.UtcNow
+                    });
 
+                return affectedRows > 0;
+            }
+        }
         public async Task<bool> DeleteAsync(Guid id)
         {
             int affectedRows = 0;
